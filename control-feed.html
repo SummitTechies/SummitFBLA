@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit FBLA | Control Feed</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="control-feed" data-requires-auth="true">
+  <div class="layout">
+    <aside class="sidebar">
+      <h2 class="club-title">Summit FBLA</h2>
+      <p class="club-subtitle">Central Oregon</p>
+      <a class="nav-link" data-link="home" href="index.html">Home</a>
+      <a class="nav-link" data-link="about" href="about.html">About</a>
+      <a class="nav-link" data-link="support" href="support.html">Support</a>
+      <a class="nav-link" data-link="contact" href="contact.html">Contact</a>
+      <a class="nav-link hidden" data-auth-required="true" data-link="feed" href="feed.html">Feed</a>
+      <a class="nav-link hidden" data-auth-required="true" data-link="control-feed" href="control-feed.html">Control Feed</a>
+      <a class="nav-link" data-guest-only="true" data-link="login" href="login.html">Login</a>
+      <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+    </aside>
+    <main class="main">
+      <section class="card">
+        <h1>Control Feed</h1>
+        <p>Post new updates to the club feed. New posts appear at the top with timestamp.</p>
+        <form id="postForm">
+          <label for="postContent">Announcement Text</label>
+          <textarea id="postContent" required placeholder="Share the latest Summit FBLA update..."></textarea>
+          <label for="postImage">Optional Image</label>
+          <input id="postImage" type="file" accept="image/*" />
+          <button class="primary" type="submit">Submit Post</button>
+          <div id="postMessage" class="message"></div>
+        </form>
+      </section>
+      <section class="card">
+        <h2>Current Feed Preview</h2>
+        <div id="controlPostsPreview"></div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
