@@ -154,4 +154,168 @@ document.addEventListener('DOMContentLoaded', () => {
   initLogin();
   initControlFeed();
   renderPosts('feedPosts');
+  initPosPage();
+  initCheckoutPage();
 });
+
+
+const POS_ITEMS_KEY = 'summitFblaPosItems';
+const POS_CART_KEY = 'summitFblaPosCart';
+const POS_TAX_RATE_KEY = 'summitFblaPosTaxRate';
+
+function getStoredJson(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return parsed ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function getPosItems() {
+  const items = getStoredJson(POS_ITEMS_KEY, []);
+  return Array.isArray(items) ? items : [];
+}
+
+function savePosItems(items) {
+  localStorage.setItem(POS_ITEMS_KEY, JSON.stringify(items));
+}
+
+function getCart() {
+  const cart = getStoredJson(POS_CART_KEY, []);
+  return Array.isArray(cart) ? cart : [];
+}
+
+function saveCart(cart) {
+  localStorage.setItem(POS_CART_KEY, JSON.stringify(cart));
+}
+
+function getTaxRate() {
+  const stored = Number(localStorage.getItem(POS_TAX_RATE_KEY));
+  return Number.isFinite(stored) && stored >= 0 ? stored : 0;
+}
+
+function money(value) {
+  return `$${value.toFixed(2)}`;
+}
+
+function renderItemButtons() {
+  const container = document.getElementById('itemButtons');
+  if (!container) return;
+
+  const items = getPosItems();
+  if (items.length === 0) {
+    container.innerHTML = '<p class="empty-state">No items yet. Add your first item above.</p>';
+    return;
+  }
+
+  container.innerHTML = items
+    .map((item) => `<button type="button" class="item-btn" data-item-id="${item.id}">${item.name}<span>${money(item.price)}</span></button>`)
+    .join('');
+
+  container.querySelectorAll('.item-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = items.find((i) => i.id === btn.dataset.itemId);
+      if (!item) return;
+      const cart = getCart();
+      cart.push({ id: item.id, name: item.name, price: item.price });
+      saveCart(cart);
+      renderTicket();
+    });
+  });
+}
+
+function renderTicket() {
+  const list = document.getElementById('ticketItems');
+  const subtotalEl = document.getElementById('subtotal');
+  const taxEl = document.getElementById('tax');
+  const totalEl = document.getElementById('total');
+  if (!list || !subtotalEl || !taxEl || !totalEl) return;
+
+  const cart = getCart();
+  if (cart.length === 0) {
+    list.innerHTML = '<p class="empty-state">No items on this ticket yet.</p>';
+  } else {
+    list.innerHTML = cart.map((item, idx) => `<div class="ticket-row"><span>${idx + 1}. ${item.name}</span><strong>${money(item.price)}</strong></div>`).join('');
+  }
+
+  const taxRate = getTaxRate();
+  const subtotal = cart.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  const tax = subtotal * taxRate;
+  const total = subtotal + tax;
+
+  subtotalEl.textContent = money(subtotal);
+  taxEl.textContent = money(tax);
+  taxEl.parentElement.querySelector('span').textContent = `Tax (${(taxRate * 100).toFixed(2)}%)`;
+  totalEl.textContent = money(total);
+}
+
+function initPosPage() {
+  const itemForm = document.getElementById('itemForm');
+  if (!itemForm) return;
+
+  itemForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById('itemName');
+    const priceInput = document.getElementById('itemPrice');
+    const name = nameInput.value.trim();
+    const price = Number(priceInput.value);
+
+    if (!name || !Number.isFinite(price) || price < 0) return;
+
+    const items = getPosItems();
+    items.push({ id: crypto.randomUUID(), name, price });
+    savePosItems(items);
+    itemForm.reset();
+    renderItemButtons();
+  });
+
+  const clearCartBtn = document.getElementById('clearCartBtn');
+  if (clearCartBtn) {
+    clearCartBtn.addEventListener('click', () => {
+      saveCart([]);
+      renderTicket();
+    });
+  }
+
+  renderItemButtons();
+  renderTicket();
+}
+
+function initCheckoutPage() {
+  const totalEl = document.getElementById('checkoutTotal');
+  if (!totalEl) return;
+
+  const cart = getCart();
+  const taxRate = getTaxRate();
+  const subtotal = cart.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  const total = subtotal + subtotal * taxRate;
+  totalEl.textContent = money(total);
+
+  const cashBtn = document.getElementById('cashCalcBtn');
+  const cashInput = document.getElementById('cashGiven');
+  const result = document.getElementById('cashResult');
+
+  cashBtn?.addEventListener('click', () => {
+    const given = Number(cashInput.value);
+    if (!Number.isFinite(given) || given < 0) {
+      result.textContent = 'Enter a valid cash amount.';
+      result.className = 'message error';
+      return;
+    }
+
+    const diff = given - total;
+    if (diff < 0) {
+      result.textContent = `Customer still owes ${money(Math.abs(diff))}.`;
+      result.className = 'message error';
+    } else if (diff === 0) {
+      result.textContent = 'Exact cash received. No change needed.';
+      result.className = 'message';
+    } else {
+      result.textContent = `Give back ${money(diff)} from the register.`;
+      result.className = 'message';
+    }
+  });
+}

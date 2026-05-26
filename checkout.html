@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit FBLA | Checkout</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="checkout">
+  <div class="layout">
+    <aside class="sidebar">
+      <h2 class="club-title">Summit FBLA</h2>
+      <p class="club-subtitle">Central Oregon</p>
+      <a class="nav-link" data-link="home" href="index.html">Home</a>
+      <a class="nav-link" data-link="about" href="about.html">About</a>
+      <a class="nav-link" data-link="support" href="support.html">Support</a>
+      <a class="nav-link" data-link="contact" href="contact.html">Contact</a>
+      <a class="nav-link" data-link="pos" href="pos.html">Store POS</a>
+      <a class="nav-link" data-link="checkout" href="checkout.html">Checkout</a>
+      <a class="nav-link hidden" data-auth-required="true" data-link="feed" href="feed.html">Feed</a>
+      <a class="nav-link hidden" data-auth-required="true" data-link="control-feed" href="control-feed.html">Control Feed</a>
+      <a class="nav-link" data-guest-only="true" data-link="login" href="login.html">Login</a>
+      <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+    </aside>
+
+    <main class="main">
+      <section class="card">
+        <h1>Checkout</h1>
+        <p>Show this QR code for online payment, or use the cash section below.</p>
+
+        <div class="checkout-grid">
+          <div>
+            <h2>QR Payment</h2>
+            <img id="qrImage" class="qr-placeholder" src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=https%3A%2F%2For-bendlapine-lite.intouchreceipting.com%2FSummitHighSchoolStorm-PaymentPage-FBLA" alt="Payment QR code" />
+            <p class="empty-state">This QR code links to the official Summit FBLA payment page.</p>
+          
+            <p><a href="https://or-bendlapine-lite.intouchreceipting.com/SummitHighSchoolStorm-PaymentPage-FBLA" target="_blank" rel="noopener noreferrer">Open payment page in a new tab</a></p>
+          </div>
+
+          <div>
+            <h2>Cash Payment</h2>
+            <p>Total due: <strong id="checkoutTotal">$0.00</strong></p>
+            <label for="cashGiven">Cash received</label>
+            <input id="cashGiven" type="number" min="0" step="0.01" placeholder="e.g. 10 or 20" />
+            <button id="cashCalcBtn" type="button" class="primary">Calculate Change</button>
+            <p id="cashResult" class="message"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
