@@ -161,3 +161,105 @@ button.primary {
     width: 100%;
   }
 }
+
+.pos-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.inline-form {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr auto;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.item-btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 700;
+}
+
+.item-btn span {
+  display: block;
+  margin-top: 4px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.ticket-items {
+  min-height: 220px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 8px 0;
+}
+
+.totals div {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+}
+
+.secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.ticket-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkout-link {
+  text-decoration: none;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.qr-placeholder {
+  width: 260px;
+  max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 1000px) {
+  .pos-layout,
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inline-form {
+    grid-template-columns: 1fr;
+  }
+}
